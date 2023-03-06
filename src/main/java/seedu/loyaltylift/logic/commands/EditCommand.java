@@ -19,11 +19,7 @@ import seedu.loyaltylift.commons.core.index.Index;
 import seedu.loyaltylift.commons.util.CollectionUtil;
 import seedu.loyaltylift.logic.commands.exceptions.CommandException;
 import seedu.loyaltylift.model.Model;
-import seedu.loyaltylift.model.person.Address;
-import seedu.loyaltylift.model.person.Email;
-import seedu.loyaltylift.model.person.Name;
-import seedu.loyaltylift.model.person.Person;
-import seedu.loyaltylift.model.person.Phone;
+import seedu.loyaltylift.model.person.*;
 import seedu.loyaltylift.model.tag.Tag;
 
 /**
@@ -97,9 +93,10 @@ public class EditCommand extends Command {
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
+        Remark updatedRemark = personToEdit.getRemark(); // edit command does not allow editing remarks
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedRemark, updatedTags);
     }
 
     @Override

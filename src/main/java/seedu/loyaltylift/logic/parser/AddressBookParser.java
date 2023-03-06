@@ -15,6 +15,7 @@ import seedu.loyaltylift.logic.commands.ExitCommand;
 import seedu.loyaltylift.logic.commands.FindCommand;
 import seedu.loyaltylift.logic.commands.HelpCommand;
 import seedu.loyaltylift.logic.commands.ListCommand;
+import seedu.loyaltylift.logic.commands.RemarkCommand;
 import seedu.loyaltylift.logic.parser.exceptions.ParseException;
 
 /**
@@ -68,7 +69,10 @@ public class AddressBookParser {
         case HelpCommand.COMMAND_WORD:
             return new HelpCommand();
 
-        default:
+        case RemarkCommand.COMMAND_WORD:
+            return new RemarkCommandParser().parse(arguments);
+
+                default:
             throw new ParseException(MESSAGE_UNKNOWN_COMMAND);
         }
     }
