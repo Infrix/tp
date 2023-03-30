@@ -19,6 +19,7 @@ import seedu.loyaltylift.model.customer.Email;
 import seedu.loyaltylift.model.customer.Marked;
 import seedu.loyaltylift.model.customer.Phone;
 import seedu.loyaltylift.model.customer.Points;
+import seedu.loyaltylift.model.customer.Tier;
 import seedu.loyaltylift.model.tag.Tag;
 
 /**
@@ -37,6 +38,7 @@ class JsonAdaptedCustomer {
 
     private final Integer points;
     private final Integer cumulativePoints;
+    private final String tier;
     private final Boolean marked;
     private final String note;
 
@@ -50,6 +52,7 @@ class JsonAdaptedCustomer {
                                @JsonProperty("tagged") List<JsonAdaptedTag> tagged,
                                @JsonProperty("points") Integer points,
                                @JsonProperty("cumulativePoints") Integer cumulativePoints,
+                               @JsonProperty("tier") String tier,
                                @JsonProperty("marked") Boolean marked,
                                @JsonProperty("note") String note) {
         this.customerType = customerType;
@@ -59,6 +62,7 @@ class JsonAdaptedCustomer {
         this.address = address;
         this.points = points;
         this.cumulativePoints = cumulativePoints;
+        this.tier = tier;
         this.marked = marked;
         this.note = note;
         if (tagged != null) {
@@ -80,6 +84,7 @@ class JsonAdaptedCustomer {
                 .collect(Collectors.toList()));
         points = source.getPoints().value;
         cumulativePoints = source.getPoints().cumulative;
+        tier = source.getTier().name.toString();
         marked = source.getMarked().value;
         note = source.getNote().value;
     }
@@ -154,6 +159,14 @@ class JsonAdaptedCustomer {
         }
         final Points modelPoints = new Points(points, cumulativePoints);
 
+        if (tier == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Tier.class.getSimpleName()));
+        }
+        if (!Tier.isValidTier(tier)) {
+            throw new IllegalValueException(Tier.MESSAGE_CONSTRAINTS);
+        }
+        final Tier modelTier = Tier.getTierFromTierName(Tier.tierName.valueOf(tier));
+
         if (marked == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Marked.class.getSimpleName()));
         }
@@ -165,7 +178,7 @@ class JsonAdaptedCustomer {
         final Note modelNote = new Note(note);
 
         return new Customer(modelCustomerType, modelName, modelPhone, modelEmail, modelAddress, modelTags,
-                modelPoints, modelMarked, modelNote);
+                modelPoints, modelTier, modelMarked, modelNote);
     }
 
 }
