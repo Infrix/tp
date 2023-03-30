@@ -20,6 +20,7 @@ import seedu.loyaltylift.model.customer.Email;
 import seedu.loyaltylift.model.customer.Marked;
 import seedu.loyaltylift.model.customer.Phone;
 import seedu.loyaltylift.model.customer.Points;
+import seedu.loyaltylift.model.customer.Tier;
 import seedu.loyaltylift.model.tag.Tag;
 
 /**
@@ -88,7 +89,9 @@ public class SetPointsCommand extends Command {
         Marked marked = customerToEdit.getMarked();
         Note note = customerToEdit.getNote();
 
-        return new Customer(customerType, name, phone, email, address, tags, this.points, marked, note);
+        Tier newTier = Tier.getTierFromPoints(this.points);
+
+        return new Customer(customerType, name, phone, email, address, tags, this.points, newTier, marked, note);
     }
 
     /**

@@ -21,6 +21,7 @@ import seedu.loyaltylift.model.customer.Email;
 import seedu.loyaltylift.model.customer.Marked;
 import seedu.loyaltylift.model.customer.Phone;
 import seedu.loyaltylift.model.customer.Points;
+import seedu.loyaltylift.model.customer.Tier;
 import seedu.loyaltylift.model.tag.Tag;
 
 /**
@@ -92,13 +93,15 @@ public class AddPointsCommand extends Command {
         Note note = customerToEdit.getNote();
 
         Points newPoints;
+        Tier newTier;
         try {
             newPoints = points.editPoints(this.addPoints);
+            newTier = Tier.getTierFromPoints(newPoints);
         } catch (IllegalValueException e) {
             throw new CommandException(MESSAGE_INVALID_POINTS);
         }
 
-        return new Customer(customerType, name, phone, email, address, tags, newPoints, marked, note);
+        return new Customer(customerType, name, phone, email, address, tags, newPoints, newTier, marked, note);
     }
 
 
