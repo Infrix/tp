@@ -40,6 +40,7 @@ public class Customer {
 
     // Optional fields
     private final Points points;
+    private final Tier tier;
     private final Marked marked;
     private final Note note;
 
@@ -50,6 +51,7 @@ public class Customer {
             Address address, Set<Tag> tags) {
         this(customerType, name, phone, email, address, tags,
                 new Points(0, 0),
+                Tier.getNoTier(),
                 new Marked(false),
                 new Note(""));
     }
@@ -58,7 +60,7 @@ public class Customer {
      * Every field must be present and not null.
      */
     public Customer(CustomerType customerType, Name name, Phone phone, Email email,
-            Address address, Set<Tag> tags, Points points, Marked marked, Note note) {
+            Address address, Set<Tag> tags, Points points, Tier tier, Marked marked, Note note) {
         requireAllNonNull(name, phone, email, address, tags, points);
         this.customerType = customerType;
         this.name = name;
@@ -67,6 +69,7 @@ public class Customer {
         this.address = address;
         this.tags.addAll(tags);
         this.points = points;
+        this.tier = Tier.getTierFromPoints(points);
         this.marked = marked;
         this.note = note;
     }
@@ -105,6 +108,10 @@ public class Customer {
 
     public Points getPoints() {
         return points;
+    }
+
+    public Tier getTier() {
+        return tier;
     }
 
     public Note getNote() {
@@ -155,6 +162,7 @@ public class Customer {
                 && otherCustomer.getTags().equals(getTags())
                 && otherCustomer.getCustomerType().equals(getCustomerType())
                 && otherCustomer.getPoints().equals(getPoints())
+                && otherCustomer.getTier().equals(getTier())
                 && otherCustomer.getMarked().equals(getMarked())
                 && otherCustomer.getNote().equals(getNote());
     }
@@ -179,6 +187,8 @@ public class Customer {
                 .append(getAddress())
                 .append("; Points: ")
                 .append(getPoints())
+                .append("; Tier: ")
+                .append(getTier())
                 .append("; Bookmarked: ")
                 .append(getMarked());
 
