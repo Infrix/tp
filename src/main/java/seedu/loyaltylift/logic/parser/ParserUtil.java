@@ -21,6 +21,7 @@ import seedu.loyaltylift.model.customer.CustomerType;
 import seedu.loyaltylift.model.customer.Email;
 import seedu.loyaltylift.model.customer.Phone;
 import seedu.loyaltylift.model.customer.Points;
+import seedu.loyaltylift.model.customer.Tier;
 import seedu.loyaltylift.model.order.Order;
 import seedu.loyaltylift.model.order.Quantity;
 import seedu.loyaltylift.model.order.StatusValue;
@@ -203,6 +204,30 @@ public class ParserUtil {
             throw new ParseException(Points.MESSAGE_CONSTRAINTS_ADDITION);
         }
         return integerTrimmedPoints;
+    }
+
+    /**
+     * Parses a {@code String name} into a {@code Tier}.
+     *
+     * @throws ParseException if the given {@code name} is invalid.
+     */
+    public static Tier parseTier(String name) throws ParseException {
+        requireNonNull(name);
+        String trimmedName = name.trim();
+        String trimmedNameUppercase = trimmedName.toUpperCase();
+        Tier.tierName tierName;
+        try {
+            tierName = Tier.tierName.valueOf(trimmedNameUppercase);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException(Tier.MESSAGE_CONSTRAINTS);
+        }
+
+        if (tierName == Tier.tierName.NONE) {
+            // cannot edit the tier, NONE
+            throw new ParseException(Tier.MESSAGE_CONSTRAINTS);
+        }
+
+        return Tier.getTierFromTierName(tierName);
     }
 
     /**
