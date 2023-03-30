@@ -28,6 +28,7 @@ import seedu.loyaltylift.model.customer.Email;
 import seedu.loyaltylift.model.customer.Marked;
 import seedu.loyaltylift.model.customer.Phone;
 import seedu.loyaltylift.model.customer.Points;
+import seedu.loyaltylift.model.customer.Tier;
 import seedu.loyaltylift.model.tag.Tag;
 
 /**
@@ -106,11 +107,12 @@ public class EditCustomerCommand extends Command {
         CustomerType updatedCustomerType =
                 editCustomerDescriptor.getCustomerType().orElse(customerToEdit.getCustomerType());
         Points points = customerToEdit.getPoints();
+        Tier tier = customerToEdit.getTier();
         Marked marked = customerToEdit.getMarked();
         Note note = customerToEdit.getNote();
 
         return new Customer(updatedCustomerType, updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                points, marked, note);
+                points, tier, marked, note);
     }
 
     @Override
