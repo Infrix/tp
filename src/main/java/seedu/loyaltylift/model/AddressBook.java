@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import javafx.collections.ObservableList;
 import seedu.loyaltylift.model.customer.Customer;
@@ -51,6 +52,16 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void setCustomers(List<Customer> customers) {
         this.customers.setCustomers(customers);
+    }
+
+    /**
+     * Applys function on every customer in the address book.
+     * @param function to be applied on every customer in the address book.
+     */
+    public void applyFunctionToAllCustomers(Function<Customer, Void> function) {
+        for (Customer customer : customers) {
+            function.apply(customer);
+        }
     }
 
     /**

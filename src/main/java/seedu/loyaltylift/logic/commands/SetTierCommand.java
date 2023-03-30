@@ -2,14 +2,11 @@ package seedu.loyaltylift.logic.commands;
 
 import static seedu.loyaltylift.commons.util.CollectionUtil.requireAllNonNull;
 import static seedu.loyaltylift.logic.parser.CliSyntax.PREFIX_POINTS;
-import static seedu.loyaltylift.model.Model.PREDICATE_SHOW_ALL_CUSTOMERS;
 import static seedu.loyaltylift.logic.parser.CliSyntax.PREFIX_TIER;
+import static seedu.loyaltylift.model.Model.PREDICATE_SHOW_ALL_CUSTOMERS;
 
-import java.util.List;
 import java.util.Set;
 
-import seedu.loyaltylift.commons.core.Messages;
-import seedu.loyaltylift.commons.core.index.Index;
 import seedu.loyaltylift.logic.commands.exceptions.CommandException;
 import seedu.loyaltylift.model.Model;
 import seedu.loyaltylift.model.attribute.Address;
@@ -35,7 +32,7 @@ public class SetTierCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Sets the point threshold for a particular tier \n"
             + "Parameters: "
-            + PREFIX_TIER + " (must be an integer, 1, 2 or 3) "
+            + PREFIX_TIER + " (must be bronze, silver or gold) "
             + PREFIX_POINTS + "[POINTS]\n"
             + "Example: " + COMMAND_WORD
             + PREFIX_TIER + "1 "
@@ -44,7 +41,9 @@ public class SetTierCommand extends Command {
 
     public static final String MESSAGE_ARGUMENTS = "Tier: %1$s, Points: %2$s";
 
-    public static final String MESSAGE_SET_POINTS_SUCCESS = "Set point threshold for Tier: %1$s";
+    public static final String MESSAGE_SET_TIER_SUCCESS = "Set point threshold for Tier: %1$s";
+    public static final String MESSAGE_INVALID_TIER = "Point threshold in each tier must adhere to the following:\n"
+            + "No tier < Bronze < Silver < Gold";
 
     private final Tier tier;
     private final Points points;
@@ -62,22 +61,31 @@ public class SetTierCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
-        /**
-        List<Customer> lastShownList = model.getFilteredCustomerList();
-
-        if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_CUSTOMER_DISPLAYED_INDEX);
+        if (!Tier.isValidPointThresholdForTier(tier, points)) {
+            throw new CommandException(MESSAGE_INVALID_TIER);
         }
 
-        Customer customerToEdit = lastShownList.get(index.getZeroBased());
-        Customer editedCustomerWithPoints = createEditedCustomer(customerToEdit);
+        tier.setPointsThreshold(points);
 
-        model.setCustomer(customerToEdit, editedCustomerWithPoints);
+        model.applyFunctionOnCustomers((customer) -> {
+            Points customerPoints = customer.getPoints();
+            Tier customerTier = customer.getTier();
+
+            Tier newTier = Tier.getTierFromPoints(customerPoints);
+
+            // because there are only 4 Tier objects at any given time, setting the point threshold above
+            // should also affect the customer's Tier, and so we should be able to use .equals here.
+            if (!customerTier.equals(newTier)) {
+                // if tier has changed, we need to edit the customer
+                Customer editedCustomerNewTier = createEditedCustomer(customer);
+                model.setCustomer(customer, editedCustomerNewTier);
+            }
+            return null;
+        });
+
         model.updateFilteredCustomerList(PREDICATE_SHOW_ALL_CUSTOMERS);
 
-        return new CommandResult(generateSuccessMessage(editedCustomerWithPoints));
-         */
-        throw new CommandException("this is being executed!!!");
+        return new CommandResult(generateSuccessMessage(this.tier));
     }
 
     /**
@@ -91,11 +99,12 @@ public class SetTierCommand extends Command {
         Email email = customerToEdit.getEmail();
         Address address = customerToEdit.getAddress();
         Set<Tag> tags = customerToEdit.getTags();
+        Points points = customerToEdit.getPoints();
+        Tier newTier = Tier.getTierFromPoints(points);
         Marked marked = customerToEdit.getMarked();
         Note note = customerToEdit.getNote();
 
-        //THIS METHOD DOES NOT DO ANYTHING
-        return new Customer(customerType, name, phone, email, address, tags, this.points, this.tier, marked, note);
+        return new Customer(customerType, name, phone, email, address, tags, points, newTier, marked, note);
     }
 
     /**
@@ -103,7 +112,7 @@ public class SetTierCommand extends Command {
      * the point threshold of the tier is set
      */
     private String generateSuccessMessage(Tier tier) {
-        String message = MESSAGE_SET_POINTS_SUCCESS;
+        String message = MESSAGE_SET_TIER_SUCCESS;
         return String.format(message, tier);
     }
 

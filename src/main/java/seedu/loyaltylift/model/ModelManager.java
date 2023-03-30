@@ -5,6 +5,7 @@ import static seedu.loyaltylift.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -126,6 +127,11 @@ public class ModelManager implements Model {
         requireAllNonNull(target, editedCustomer);
 
         addressBook.setCustomer(target, editedCustomer);
+    }
+
+    @Override
+    public void applyFunctionOnCustomers(Function<Customer, Void> function) {
+        addressBook.applyFunctionToAllCustomers(function);
     }
 
     //=========== Order List =================================================================================

@@ -12,7 +12,7 @@ public class Tier {
     /**
      * Represents a Customer's tier.
      */
-    public enum tierName {
+    public enum TierName {
         NONE,
         BRONZE,
         SILVER,
@@ -22,20 +22,20 @@ public class Tier {
     private static Integer BRONZE_STARTING_THRESHOLD = 1000;
     private static Integer SILVER_STARTING_THRESHOLD = 5000;
     private static Integer GOLD_STARTING_THRESHOLD = 10000;
-    private static Tier NONE = new Tier(tierName.NONE, new Points(NO_TIER_THRESHOLD, NO_TIER_THRESHOLD));
-    private static Tier BRONZE = new Tier(tierName.BRONZE, new Points (BRONZE_STARTING_THRESHOLD, BRONZE_STARTING_THRESHOLD));
-    private static Tier SILVER = new Tier(tierName.SILVER, new Points (SILVER_STARTING_THRESHOLD, SILVER_STARTING_THRESHOLD));
-    private static Tier GOLD = new Tier(tierName.GOLD, new Points (GOLD_STARTING_THRESHOLD, GOLD_STARTING_THRESHOLD));
+    private static Tier NONE = new Tier(TierName.NONE, new Points(NO_TIER_THRESHOLD, NO_TIER_THRESHOLD));
+    private static Tier BRONZE = new Tier(TierName.BRONZE, new Points (BRONZE_STARTING_THRESHOLD, BRONZE_STARTING_THRESHOLD));
+    private static Tier SILVER = new Tier(TierName.SILVER, new Points (SILVER_STARTING_THRESHOLD, SILVER_STARTING_THRESHOLD));
+    private static Tier GOLD = new Tier(TierName.GOLD, new Points (GOLD_STARTING_THRESHOLD, GOLD_STARTING_THRESHOLD));
 
     public static final String MESSAGE_CONSTRAINTS = "Tier must be "
-            + tierName.BRONZE
+            + TierName.BRONZE
             + ", "
-            + tierName.SILVER
+            + TierName.SILVER
             + " or "
-            + tierName.GOLD;
+            + TierName.GOLD;
 
-    public final tierName name;
-    public final Points pointThreshold;
+    public final TierName name;
+    public Points pointThreshold;
 
     /**
      * Constructs a {@code Tier}.
@@ -43,7 +43,7 @@ public class Tier {
      * @param name of the tier
      * @param pointThreshold the point threshold for the associated tier
      */
-    private Tier(tierName name, Points pointThreshold) {
+    private Tier(TierName name, Points pointThreshold) {
         requireAllNonNull(name, pointThreshold);
         this.name = name;
         this.pointThreshold = pointThreshold;
@@ -64,7 +64,7 @@ public class Tier {
         return GOLD;
     }
 
-    public static Tier getTierFromTierName(tierName tierName) {
+    public static Tier getTierFromTierName(TierName tierName) {
         switch(tierName.toString()) {
         case "NONE":
             return NONE;
@@ -79,17 +79,21 @@ public class Tier {
         }
     }
 
+    public void setPointsThreshold(Points points) {
+        this.pointThreshold = points;
+    }
+
     /**
      * Returns true if tierToCompare is below all other tiers in terms of point threshold
      *
-     * @param tierToCompare the tier to be evaluated
-     * @param tiers all other tiers for tierToCompare to compare against
+     * @param newPointThreshold the points to compare
+     * @param tiers all other tiers for newPointThreshold to compare against
      * @return true if tierToCompare point threshold is below each tier in tiers
      */
-    private static boolean isBelowTiers(Tier tierToCompare, Tier... tiers) {
+    private static boolean isBelowTiersPointThreshold(Points newPointThreshold,  Tier... tiers) {
         int counter = 0;
         for (Tier tier : tiers) {
-            if (tierToCompare.pointThreshold.compareTo(tier.pointThreshold) < 0) {
+            if (newPointThreshold.compareTo(tier.pointThreshold) < 0) {
                 counter++;
             }
         }
@@ -99,14 +103,14 @@ public class Tier {
     /**
      * Returns true if tierToCompare is above all other tiers in terms of point threshold
      *
-     * @param tierToCompare the tier to be evaluated
-     * @param tiers all other tiers for tierToCompare to compare against
+     * @param newPointThreshold the points to compare
+     * @param tiers all other tiers for newPointThreshold to compare against
      * @return true if tierToCompare point threshold is above each tier in tiers
      */
-    private static boolean isAboveTiers(Tier tierToCompare, Tier... tiers) {
+    private static boolean isAboveTiersPointThreshold(Points newPointThreshold, Tier... tiers) {
         int counter = 0;
         for (Tier tier : tiers) {
-            if (tierToCompare.pointThreshold.compareTo(tier.pointThreshold) > 0) {
+            if (newPointThreshold.compareTo(tier.pointThreshold) > 0) {
                 counter++;
             }
         }
@@ -119,23 +123,26 @@ public class Tier {
      * bronze must be strictly below silver and gold
      * silver must be strictly below gold
      *
+     * @param points the pointThreshold to be set for tier
      * @param tier the tier with the point threshold to check
      * @return true if the order, NONE < BRONZE < SILVER < GOLD, holds
      */
-    public static boolean isValidPointThreshold(Tier tier) {
+    public static boolean isValidPointThresholdForTier(Tier tier, Points points) {
         switch(tier.name) {
 
         case NONE:
-            return isBelowTiers(NONE, BRONZE, SILVER, GOLD);
+            return isBelowTiersPointThreshold(points, BRONZE, SILVER, GOLD);
 
         case BRONZE:
-            return isBelowTiers(BRONZE, SILVER, GOLD) && isAboveTiers(BRONZE, NONE);
+            return isBelowTiersPointThreshold(points, SILVER, GOLD)
+                    && isAboveTiersPointThreshold(points, NONE);
 
         case SILVER:
-            return isBelowTiers(SILVER, GOLD) && isAboveTiers(SILVER, NONE, BRONZE);
+            return isBelowTiersPointThreshold(points, GOLD)
+                    && isAboveTiersPointThreshold(points, NONE, BRONZE);
 
         case GOLD:
-            return isAboveTiers(GOLD, NONE, BRONZE, SILVER);
+            return isAboveTiersPointThreshold(points, NONE, BRONZE, SILVER);
 
         default:
             return false;
@@ -161,7 +168,7 @@ public class Tier {
      */
     public static boolean isValidTier(String name) {
         try {
-            tierName.valueOf(name.toUpperCase());
+            TierName.valueOf(name.toUpperCase());
             return true;
         } catch (IllegalArgumentException e) {
             return false;

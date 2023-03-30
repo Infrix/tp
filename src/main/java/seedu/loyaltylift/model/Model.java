@@ -2,6 +2,7 @@ package seedu.loyaltylift.model;
 
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
@@ -79,6 +80,11 @@ public interface Model {
      * another existing customer in the address book.
      */
     void setCustomer(Customer target, Customer editedCustomer);
+
+    /**
+     * Runs a function on every customer in the address book
+     */
+    void applyFunctionOnCustomers(Function<Customer, Void> function);
 
     /** Returns an unmodifiable view of the filtered customer list */
     ObservableList<Customer> getFilteredCustomerList();
