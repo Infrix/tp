@@ -2,9 +2,9 @@ package seedu.loyaltylift.model.customer;
 
 import static seedu.loyaltylift.commons.util.CollectionUtil.requireAllNonNull;
 
-import seedu.loyaltylift.commons.exceptions.IllegalValueException;
-
 import java.util.Objects;
+
+import seedu.loyaltylift.commons.exceptions.IllegalValueException;
 
 /**
  * Represents a Customer's points in the address book.

@@ -165,7 +165,7 @@ class JsonAdaptedCustomer {
         if (!Tier.isValidTier(tier)) {
             throw new IllegalValueException(Tier.MESSAGE_CONSTRAINTS);
         }
-        final Tier modelTier = Tier.getTierFromTierName(Tier.tierName.valueOf(tier));
+        final Tier modelTier = Tier.getTierFromTierName(Tier.TierName.valueOf(tier));
 
         if (marked == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Marked.class.getSimpleName()));

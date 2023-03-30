@@ -18,14 +18,6 @@ public class Tier {
         SILVER,
         GOLD
     }
-    private static Integer NO_TIER_THRESHOLD = 0;
-    private static Integer BRONZE_STARTING_THRESHOLD = 1000;
-    private static Integer SILVER_STARTING_THRESHOLD = 5000;
-    private static Integer GOLD_STARTING_THRESHOLD = 10000;
-    private static Tier NONE = new Tier(TierName.NONE, new Points(NO_TIER_THRESHOLD, NO_TIER_THRESHOLD));
-    private static Tier BRONZE = new Tier(TierName.BRONZE, new Points (BRONZE_STARTING_THRESHOLD, BRONZE_STARTING_THRESHOLD));
-    private static Tier SILVER = new Tier(TierName.SILVER, new Points (SILVER_STARTING_THRESHOLD, SILVER_STARTING_THRESHOLD));
-    private static Tier GOLD = new Tier(TierName.GOLD, new Points (GOLD_STARTING_THRESHOLD, GOLD_STARTING_THRESHOLD));
 
     public static final String MESSAGE_CONSTRAINTS = "Tier must be "
             + TierName.BRONZE
@@ -33,9 +25,19 @@ public class Tier {
             + TierName.SILVER
             + " or "
             + TierName.GOLD;
+    private static final Integer NO_TIER_THRESHOLD = 0;
+    private static final Integer BRONZE_STARTING_THRESHOLD = 1000;
+    private static final Integer SILVER_STARTING_THRESHOLD = 5000;
+    private static final Integer GOLD_STARTING_THRESHOLD = 10000;
+    private static Tier none = new Tier(TierName.NONE, new Points(NO_TIER_THRESHOLD, NO_TIER_THRESHOLD));
+    private static Tier bronze = new Tier(TierName.BRONZE,
+            new Points(BRONZE_STARTING_THRESHOLD, BRONZE_STARTING_THRESHOLD));
+    private static Tier silver = new Tier(TierName.SILVER,
+            new Points(SILVER_STARTING_THRESHOLD, SILVER_STARTING_THRESHOLD));
+    private static Tier gold = new Tier(TierName.GOLD, new Points(GOLD_STARTING_THRESHOLD, GOLD_STARTING_THRESHOLD));
 
     public final TierName name;
-    public Points pointThreshold;
+    private Points pointThreshold;
 
     /**
      * Constructs a {@code Tier}.
@@ -49,31 +51,31 @@ public class Tier {
         this.pointThreshold = pointThreshold;
     }
     public static Tier getNoTier() {
-        return NONE;
+        return none;
     }
 
     public static Tier getBronze() {
-        return BRONZE;
+        return bronze;
     }
 
     public static Tier getSilver() {
-        return SILVER;
+        return silver;
     }
 
     public static Tier getGold() {
-        return GOLD;
+        return gold;
     }
 
     public static Tier getTierFromTierName(TierName tierName) {
         switch(tierName.toString()) {
         case "NONE":
-            return NONE;
+            return none;
         case "BRONZE":
-            return BRONZE;
+            return bronze;
         case "SILVER":
-            return SILVER;
+            return silver;
         case "GOLD":
-            return GOLD;
+            return gold;
         default:
             throw new IllegalArgumentException("Invalid tier name: " + tierName);
         }
@@ -90,7 +92,7 @@ public class Tier {
      * @param tiers all other tiers for newPointThreshold to compare against
      * @return true if tierToCompare point threshold is below each tier in tiers
      */
-    private static boolean isBelowTiersPointThreshold(Points newPointThreshold,  Tier... tiers) {
+    private static boolean isBelowTiersPointThreshold(Points newPointThreshold, Tier... tiers) {
         int counter = 0;
         for (Tier tier : tiers) {
             if (newPointThreshold.compareTo(tier.pointThreshold) < 0) {
@@ -131,18 +133,18 @@ public class Tier {
         switch(tier.name) {
 
         case NONE:
-            return isBelowTiersPointThreshold(points, BRONZE, SILVER, GOLD);
+            return isBelowTiersPointThreshold(points, bronze, silver, gold);
 
         case BRONZE:
-            return isBelowTiersPointThreshold(points, SILVER, GOLD)
-                    && isAboveTiersPointThreshold(points, NONE);
+            return isBelowTiersPointThreshold(points, silver, gold)
+                    && isAboveTiersPointThreshold(points, none);
 
         case SILVER:
-            return isBelowTiersPointThreshold(points, GOLD)
-                    && isAboveTiersPointThreshold(points, NONE, BRONZE);
+            return isBelowTiersPointThreshold(points, gold)
+                    && isAboveTiersPointThreshold(points, none, bronze);
 
         case GOLD:
-            return isAboveTiersPointThreshold(points, NONE, BRONZE, SILVER);
+            return isAboveTiersPointThreshold(points, none, bronze, silver);
 
         default:
             return false;
@@ -150,14 +152,14 @@ public class Tier {
     }
 
     public static Tier getTierFromPoints(Points points) {
-        if (points.isCumulativeEqualToOrHigher(GOLD.pointThreshold)) {
-            return GOLD;
-        } else if (points.isCumulativeEqualToOrHigher(SILVER.pointThreshold)) {
-            return SILVER;
-        } else if (points.isCumulativeEqualToOrHigher(BRONZE.pointThreshold)) {
-            return BRONZE;
+        if (points.isCumulativeEqualToOrHigher(gold.pointThreshold)) {
+            return gold;
+        } else if (points.isCumulativeEqualToOrHigher(silver.pointThreshold)) {
+            return silver;
+        } else if (points.isCumulativeEqualToOrHigher(bronze.pointThreshold)) {
+            return bronze;
         } else {
-            return NONE;
+            return none;
         }
     }
 

@@ -215,14 +215,14 @@ public class ParserUtil {
         requireNonNull(name);
         String trimmedName = name.trim();
         String trimmedNameUppercase = trimmedName.toUpperCase();
-        Tier.tierName tierName;
+        Tier.TierName tierName;
         try {
-            tierName = Tier.tierName.valueOf(trimmedNameUppercase);
+            tierName = Tier.TierName.valueOf(trimmedNameUppercase);
         } catch (IllegalArgumentException e) {
             throw new ParseException(Tier.MESSAGE_CONSTRAINTS);
         }
 
-        if (tierName == Tier.tierName.NONE) {
+        if (tierName == Tier.TierName.NONE) {
             // cannot edit the tier, NONE
             throw new ParseException(Tier.MESSAGE_CONSTRAINTS);
         }

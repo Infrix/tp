@@ -12,6 +12,7 @@ import seedu.loyaltylift.model.customer.Email;
 import seedu.loyaltylift.model.customer.Marked;
 import seedu.loyaltylift.model.customer.Phone;
 import seedu.loyaltylift.model.customer.Points;
+import seedu.loyaltylift.model.customer.Tier;
 import seedu.loyaltylift.model.tag.Tag;
 import seedu.loyaltylift.model.util.SampleDataUtil;
 
@@ -26,6 +27,7 @@ public class CustomerBuilder {
     public static final String DEFAULT_ADDRESS = "123, Jurong West Ave 6, #08-111";
     public static final CustomerType DEFAULT_CUSTOMER_TYPE = CustomerType.INDIVIDUAL;
     public static final Integer DEFAULT_POINTS = 0;
+    public static final String DEFAULT_TIER = "none";
     public static final Integer DEFAULT_CUMULATIVE_POINTS = 0;
     public static final Boolean DEFAULT_MARKED = false;
     public static final String DEFAULT_NOTE = "";
@@ -37,6 +39,7 @@ public class CustomerBuilder {
     private Set<Tag> tags;
     private CustomerType customerType;
     private Points points;
+    private Tier tier;
     private Marked marked;
     private Note note;
 
@@ -51,6 +54,7 @@ public class CustomerBuilder {
         tags = new HashSet<>();
         customerType = DEFAULT_CUSTOMER_TYPE;
         points = new Points(DEFAULT_POINTS, DEFAULT_CUMULATIVE_POINTS);
+        tier = Tier.getTierFromTierName(Tier.TierName.valueOf(DEFAULT_TIER));
         marked = new Marked(DEFAULT_MARKED);
         note = new Note(DEFAULT_NOTE);
     }
@@ -66,6 +70,7 @@ public class CustomerBuilder {
         tags = new HashSet<>(customerToCopy.getTags());
         customerType = customerToCopy.getCustomerType();
         points = customerToCopy.getPoints();
+        tier = customerToCopy.getTier();
         marked = customerToCopy.getMarked();
         note = customerToCopy.getNote();
     }
@@ -127,6 +132,14 @@ public class CustomerBuilder {
     }
 
     /**
+     * Sets the {@code Tier} of the {@code Customer} that we are building.
+     */
+    public CustomerBuilder withTier(Tier.TierName tierName) {
+        this.tier = Tier.getTierFromTierName(tierName);
+        return this;
+    }
+
+    /**
      * Sets the {@code Marked} of the {@code Customer} that we are building.
      */
     public CustomerBuilder withMarked(Boolean marked) {
@@ -143,7 +156,7 @@ public class CustomerBuilder {
     }
 
     public Customer build() {
-        return new Customer(customerType, name, phone, email, address, tags, points, marked, note);
+        return new Customer(customerType, name, phone, email, address, tags, points, tier, marked, note);
     }
 
 }

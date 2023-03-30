@@ -17,6 +17,7 @@ import java.util.List;
 
 import seedu.loyaltylift.model.customer.Customer;
 import seedu.loyaltylift.model.customer.CustomerType;
+import seedu.loyaltylift.model.customer.Tier;
 
 /**
  * A utility class containing a list of {@code Customer} objects to be used in tests.
@@ -30,7 +31,8 @@ public class TypicalCustomers {
     public static final Customer BENSON = new CustomerBuilder().withName("Benson Meier")
             .withAddress("311, Clementi Ave 2, #02-25")
             .withEmail("johnd@example.com").withPhone("98765432")
-            .withTags("owesMoney", "friends").withPoints(0, 0).withMarked(true).build();
+            .withTags("owesMoney", "friends").withPoints(0, 0)
+            .withTier(Tier.TierName.valueOf("none")).withMarked(true).build();
     public static final Customer CARL = new CustomerBuilder().withName("Carl Kurz").withPhone("95352563")
             .withEmail("heinz@example.com").withAddress("wall street").build();
     public static final Customer DANIEL = new CustomerBuilder().withName("Daniel Meier").withPhone("87652533")
